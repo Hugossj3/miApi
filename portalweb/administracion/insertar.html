@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Formulario JSON - Prueba API - INSERTAR</title>
+</head>
+
+<body>
+    <form id="miFormulario">
+        <label for="idEmpresa">Id de la Empresa:</label>
+        <input type="text" name="idEmpresa" id="idEmpresa"><br>
+
+        <label for="idEmpleado">Id del empleado:</label>
+        <input type="text" name="idEmpleado" id="idEmpleado"><br>
+
+        <label for="horasxContrato">Horas por contrato a la semana:</label>
+        <input type="text" name="horasxContrato" id="horasxContrato"><br>
+
+        <label for="horasTrabajadas">Horas trabajadas:</label>
+        <input type="text" name="horasTrabajadas" id="horasTrabajadas"><br>
+
+        <label for="sueldoxHora">Sueldo que cobra por hora:</label>
+        <input type="text" name="sueldoxHora" id="sueldoxHora"><br>
+
+
+        <input type="submit" value="Enviar">
+    </form>
+
+    <div id="respuesta"></div>
+    <script>
+        //Agrega un controlador de eventos para el formulario
+        document.getElementById("miFormulario").addEventListener("submit", function (event) {
+            event.preventDefault(); // Evitar el envío predeterminado del formulario
+
+            //Cogemos los valores de los campos
+            var idEmpresa = document.getElementById("idEmpresa").value;
+            var idEmpleado = document.getElementById("idEmpleado").value;
+            var horasxContrato = document.getElementById("horasxContrato").value;
+            var horasTrabajadas = document.getElementById("horasTrabajadas").value;
+            var sueldoxHora = document.getElementById("sueldoxHora").value;
+            
+
+
+            //Creamos un objeto JavaScript con los datos
+            var datos = {
+                idEmpresa: idEmpresa,
+                idEmpleado: idEmpleado,
+                horasxContrato: horasxContrato,
+                horasTrabajadas: horasTrabajadas,
+                sueldoxHora: sueldoxHora,
+            };
+
+            console.log(datos);
+            console.log(JSON.stringify(datos));
+
+            // Enviamos los datos al servidor en formato JSON
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "../../crud/administracion/insertar.php", true);
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            xhr.send(JSON.stringify(datos));
+
+            //Manejamos la respuesta del servidor
+            xhr.onload = function () {
+                if (xhr.status == 201) {
+                    document.getElementById("respuesta").innerHTML = "Datos enviados OK";
+                } else {
+                    document.getElementById("respuesta").innerHTML = "Error al enviar datos";
+                }
+            };
+
+        }
+        
+        );
+    </script>
+</body>
+
+</html>

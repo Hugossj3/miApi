@@ -1,0 +1,47 @@
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+//header("Access-Control-Allow-Headers: Content-Type");
+
+include_once '../../basedatos/App.php';
+include_once '../../tablas/Empleados.php';
+
+//Se crea conexión y objeto act
+$database = new App();
+$db = $database->dameConexion();
+$act = new Empleados($db);
+
+$datos = json_decode(file_get_contents("php://input"));
+
+//Esto es para depurar, saldrá antes de la respuesta JSON, pero habrá que quitarlo para evitar errores!!
+echo "Datos de depuración:";
+/*
+echo $datos->id;
+echo $datos->nombre;
+echo $datos->puesto;
+echo $datos->correo;
+echo $datos->telefono;*/
+
+if (!empty($datos->nombre) && !empty($datos->puesto) && !empty($datos->correo) && !empty($datos->telefono)) {
+
+    //Se rellena actor con datos salvo el id
+    $act->nombre = $datos->nombre;
+    $act->puesto = $datos->puesto;
+    $act->correo = $datos->correo;
+    $act->telefono = $datos->telefono; 
+
+    if ($act->insertar()) {
+        http_response_code(201);
+        echo json_encode(array("info" => "Actor/Actriz Creado!"));
+    } else {
+        http_response_code(503);
+        echo json_encode(array("info" => "No se puede crear"));
+    }
+} else {
+    http_response_code(400);
+    echo json_encode(array("info" => "No se puede crear, falta algo!"));
+}
+
+?>
